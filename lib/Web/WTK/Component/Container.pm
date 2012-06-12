@@ -60,14 +60,12 @@ sub render {
     my $stream = Web::WTK::Markup::Stream->new( markup => $markup );
     my $elements = Web::WTK::Markup::ElementStream->new( stream => $stream );
 
-    while ( my $elm = $stream->next ) {
-        if ( Web::WTK::Markup::Element->isa_elm($elm) ) {
-            my $id = $elm->id() || next;
-            my $component = $self->get_component_by_id($id);
-            if ($component) {
-                $elm->component($component);
-                $component->render($elm);
-            }
+    while ( my $elm = $elements->next ) {
+        my $id = $elm->id() || next;
+        my $component = $self->get_component_by_id($id);
+        if ($component) {
+            $elm->component($component);
+            $component->render($elm);
         }
     }
 

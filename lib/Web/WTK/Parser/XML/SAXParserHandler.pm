@@ -2,7 +2,7 @@ package Web::WTK::Parser::XML::SAXParserHandler;
 
 use Web::WTK::Markup::Element;
 
-use base qw/XML::SAX::Base/;
+use parent qw/XML::SAX::Base/;
 use Data::Dumper;
 
 sub new {

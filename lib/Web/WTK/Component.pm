@@ -40,7 +40,7 @@ sub render {
         if ( !$self->visible ) {
             $markup->render_flag($Web::WTK::Markup::Element::RENDER_NONE);
         }
-        $self->rendered(1);         # we have been renderd
+        $self->rendered(1); # we have been renderd
     }
 
     return $markup;

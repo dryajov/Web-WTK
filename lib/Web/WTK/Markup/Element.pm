@@ -36,13 +36,15 @@ has 'body' => (
     is      => 'rw',
     isa     => 'ArrayRef[Any]',
     default => sub { [] },
+    lazy    => 1,
+    clearer => 'clear_body'
 );
 
 # the attributes of this element
 has 'attributes' => (
-    is  => 'rw',
-    isa => 'HashRef[Any]',
-    default => sub {{}},
+    is      => 'rw',
+    isa     => 'HashRef[Any]',
+    default => sub { {} },
 );
 
 # the namespace of the current element
@@ -94,6 +96,13 @@ sub attr {
     return $self->attributes->{$name};
 }
 
+sub remove_attr {
+    my $self = shift;
+    my $name = shift;
+
+    return delete $self->attributes->{$name};
+}
+
 sub attrs {
     return shift->attributes;
 }
@@ -113,7 +122,7 @@ sub iterator {
 
 # helper to determine if we got a MarkupElement
 sub isa_elm {
-    my ( $class, $elm ) = @_;
+    my ( $self, $elm ) = @_;
     return eval { $elm->isa(__PACKAGE__); };
 }
 
@@ -123,15 +132,23 @@ sub child_remove {
 
     my $size = $#{ $self->body };
     for ( my $i = 0 ; $i <= $size ; $i++ ) {
-        next unless isa_elm( $self->body->[$i] );
+        next unless $self->isa_elm( $self->body->[$i] );
         my $child = $self->body->[$i];
 
         if ( $child == $elm ) {
-            splice( @{ $self->body }, $i, 1 );
+            return splice( @{ $self->body }, $i, 1 );
         }
     }
 
     return;
+}
+
+sub clone {
+    my ( $self, %params ) = @_;
+
+    my %attrs = %{ $self->attributes };
+    %params = (%params, attributes => \%attrs);
+    $self->meta->clone_object( $self, %params );
 }
 
 __PACKAGE__->meta->make_immutable;
