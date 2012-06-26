@@ -3,7 +3,6 @@ package Web::WTK::Parser;
 use Moose;
 
 use Carp;
-use Web::WTK::Util::Params;
 
 # the root of the parsed doc
 has 'document' => (
@@ -18,4 +17,5 @@ sub parse {
     croak "Method unimplemented!";
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

@@ -2,8 +2,6 @@ package Web::WTK::Markup::Element;
 
 use Moose;
 
-use Web::WTK::Util::Params;
-
 use Readonly;
 Readonly::Scalar our $RENDER_NONE => 0x0;    # don't render anything
 Readonly::Scalar our $RENDER_TAG  => 0x1;    # render self only
@@ -45,6 +43,7 @@ has 'attributes' => (
     is      => 'rw',
     isa     => 'HashRef[Any]',
     default => sub { {} },
+    lazy    => 1,
 );
 
 # the namespace of the current element
@@ -58,6 +57,7 @@ has 'render_flag' => (
     is      => 'rw',
     isa     => 'Int',
     default => $RENDER_ALL,
+    lazy    => 1,
 );
 
 # helper method to get the id of this element
@@ -147,9 +147,10 @@ sub clone {
     my ( $self, %params ) = @_;
 
     my %attrs = %{ $self->attributes };
-    %params = (%params, attributes => \%attrs);
+    %params = ( %params, attributes => \%attrs );
     $self->meta->clone_object( $self, %params );
 }
 
 __PACKAGE__->meta->make_immutable;
+no Moose;
 1;

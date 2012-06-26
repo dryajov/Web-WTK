@@ -20,14 +20,17 @@ sub BUILD {
     $self->path($path);
 }
 
+# simply look for an html file in 
+# the same location as the module
 sub _get_path {
     my $file = shift;
 
-    $file =~ s|::|/|x;
+    $file =~ s|::|/|;
     $file .= ".html";
 
     return $file;
 }
 
 __PACKAGE__->meta->make_immutable;
+no Moose;
 1;

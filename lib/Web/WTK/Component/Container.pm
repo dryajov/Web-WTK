@@ -48,6 +48,7 @@ sub add {
     my ( $self, $component ) = @_;
 
     push @{ $self->children }, $component;
+    $component->parent($self);
 
     return;
 }

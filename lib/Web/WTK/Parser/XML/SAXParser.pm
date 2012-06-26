@@ -8,30 +8,31 @@ use Web::WTK::Parser::XML::SAXParserHandler;
 extends 'Web::WTK::Parser';
 
 has 'parser' => (
-    is      => 'rw',
-    builder => '_build_parser',
+	is      => 'rw',
+	builder => '_build_parser',
 );
 
 has 'handler' => (
-    is      => 'ro',
-    isa     => 'Web::WTK::Parser::XML::SAXParserHandler',
-    default => sub { Web::WTK::Parser::XML::SAXParserHandler->new() },
-    lazy    => 1,
+	is      => 'ro',
+	isa     => 'Web::WTK::Parser::XML::SAXParserHandler',
+	default => sub { Web::WTK::Parser::XML::SAXParserHandler->new() },
+	lazy    => 1,
 );
 
 sub _build_parser {
-    my ($self) = @_;
+	my ($self) = @_;
 
-    my $p = XML::SAX::ParserFactory->parser( Handler => $self->handler );
-    return $p;
+	return XML::SAX::ParserFactory->parser( Handler => $self->handler );
 }
 
 sub parse {
-    my $self    = shift;
-    my $content = shift;
+	my $self    = shift;
+	my $content = shift;
 
-    $self->parser->parse_file($content);
-    return $self->handler->document;
+	$self->parser->parse_file($content);
+	return $self->handler->document;
 }
 
+__PACKAGE__->meta->make_immutable;
+no Moose;
 1;

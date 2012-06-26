@@ -6,73 +6,77 @@ use parent qw/XML::SAX::Base/;
 use Data::Dumper;
 
 sub new {
-    my $class = shift;
+	my $class = shift;
 
-    my $self = $class->SUPER::new(@_);
-    $self->{elements} = [];       # stack of elements
-    $self->{document} = undef;    # the parsed document
+	my $self = $class->SUPER::new(@_);
+	$self->{elements} = [];       # stack of elements
+	$self->{document} = undef;    # the parsed document
 
-    return bless $self, $class;
+	return bless $self, $class;
 }
 
 sub document {
-    return shift->{document};
+	return shift->{document};
 }
 
 sub start_element {
-    my $self    = shift;
-    my $sax_elm = shift;
+	my $self    = shift;
+	my $sax_elm = shift;
 
-    push @{ $self->{elements} }, _map_to_elm($sax_elm);
+	push @{ $self->{elements} }, _map_to_elm($sax_elm);
 
-    return;
+	return;
 }
 
 sub characters {
-    my $self = shift;
-    my $data = shift;
+	my $self = shift;
+	my $data = shift;
 
-    my $elm = $self->{elements}->[-1];
-    $elm->child( $data->{Data} );
-
-    return;
+	# TODO: This is very crude, we need proper content filters
+	my $contents = $data->{Data};
+	$contents =~ s/[\s|\n]+/ /;
+	if ( $contents !~ /^\s$/ ) {
+		my $elm = $self->{elements}->[-1];
+		$elm->child($contents);
+	}
+	return;
 }
 
 sub end_element {
-    my ( $self, $element ) = @_;
-    if ( $element->{LocalName} eq "expand" ) {
-        $self->{in_include}--;
-        return;
-    }
+	my ( $self, $element ) = @_;
+	if ( $element->{LocalName} eq "expand" ) {
+		$self->{in_include}--;
+		return;
+	}
 
-    my $elm    = pop @{ $self->{elements} };
-    my $parent = $self->{elements}->[-1];
+	my $elm    = pop @{ $self->{elements} };
+	my $parent = $self->{elements}->[-1];
 
-    if ($parent) {
-        $parent->child($elm);
-    }
-    else {
-        $self->{document} = $elm;
-    }
+	if ($parent) {
+		$parent->child($elm);
+	}
+	else {
+		$self->{document} = $elm;
+	}
 
-    $elm->parent($parent) if $parent;
-    return;
+	$elm->parent($parent) if $parent;
+	return;
 }
 
 sub _map_to_elm {
-    my $sax_elm = shift;
+	my $sax_elm = shift;
 
-    my %attributes;
-    while ( my ( $key, $val ) = each %{ $sax_elm->{Attributes} } ) {
-        $attributes{ $val->{Name} } = $val->{Value};
-    }
+	my %attributes;
+	while ( my ( $key, $val ) = each %{ $sax_elm->{Attributes} } ) {
+		$attributes{ $val->{Name} } = $val->{Value};
+	}
 
-    my $elm = Web::WTK::Markup::Element->new(
-        name       => $sax_elm->{LocalName},
-        attributes => \%attributes,
-    );
+	my $elm = Web::WTK::Markup::Element->new(
+		name       => $sax_elm->{LocalName},
+		attributes => \%attributes,
+	);
 
-    return $elm;
+	return $elm;
 }
 
 1;

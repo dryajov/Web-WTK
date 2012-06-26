@@ -12,6 +12,14 @@ has 'title' => (
     isa => 'Str',
 );
 
+sub BUILDARGS {
+    my ($class) = @_;
+
+    my $name = $class;
+    $name =~ s/::/_/x;
+    return {id => lc $name};
+}
+
 sub render {
     my $self = shift;
 
@@ -25,10 +33,10 @@ sub render {
             $elm->replace_body( $self->title );
         }
         elsif ( $elm->name eq 'body' ) {
-            $self->SUPER::render($elm); # render the body
+            $self->SUPER::render($elm);    # render the body
             last;
         }
-        
+
     }
 
     return $markup;
