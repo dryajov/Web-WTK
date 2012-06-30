@@ -7,6 +7,7 @@ use HTTP::Body;
 use URI;
 use Hash::MultiValue;
 use HTTP::Headers;
+use IO::Handle;
 
 my $count;
 
@@ -61,8 +62,11 @@ has 'base' => (
 has 'body_parameters' => (
 	is      => 'rw',
 	isa     => 'Hash::MultiValue',
-	default => sub { Hash::MultiValue->from_mixed( $_[0]->body->param ) },
-	lazy    => 1,
+	default => sub {
+		my $params = $_[0]->body ? $_[0]->body->param : {};
+		Hash::MultiValue->from_mixed($params);
+	},
+	lazy => 1,
 );
 
 has 'content' => (
@@ -105,17 +109,9 @@ has 'parameters' => (
 	isa     => 'Hash::MultiValue',
 	default => sub {
 		my $s = shift;
-		Hash::MultiValue->new( $s->body_parameters, $s->query_parameters );
+		Hash::MultiValue->new( $s->body_parameters->flatten, $s->query_parameters->flatten );
 	},
-	lazy    => 1,
-	handles => {
-		get_param         => 'get',
-		set_param         => 'set',
-		get_one_param     => 'get_one',
-		get_all_params    => 'get_all',
-		get_names_params  => 'keys',
-		get_values_params => 'values',
-	}
+	lazy => 1,
 );
 
 has 'path' => (

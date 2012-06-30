@@ -30,6 +30,13 @@ has '_input_buffered' => (
 sub BUILD {
 	my $self = shift;
 
+	$self->body( $self->_parse_request_body );
+	$self->cookies( $self->_parse_cookies );
+	$self->uri( $self->_parse_uri );
+	$self->content( $self->_parse_content );
+	$self->uploads( $self->_parse_uploads );
+	$self->headers( $self->_parse_headers );
+
 	$self->request_uri( $self->env->{REQUEST_URI} );
 	$self->address( $self->env->{REMOTE_ADDR} );
 
@@ -50,15 +57,9 @@ sub BUILD {
 	my $input = IO::Handle->new->fdopen( $self->env->{'psgi.input'}, "r" );
 	$self->input_handle($input);
 
-	$self->body( $self->_parse_request_body );
-	$self->cookies( $self->_parse_cookies );
-	$self->uri( $self->_parse_uri );
 	$self->query_parameters( Hash::MultiValue->new( $self->uri->query_form ) );
-	$self->content( $self->_parse_content );
-	$self->uploads( $self->_parse_uploads );
 	$self->base( URI->new( $self->_uri_base )->canonical );
 	$self->user( $self->env->{REMOTE_USER} );
-	$self->headers( $self->_parse_headers );
 }
 
 sub _parse_headers {

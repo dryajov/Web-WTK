@@ -17,5 +17,5 @@ sub get_component_url {
     return $url;
 }
 
-no Moose;
+no Moose::Role;
 1;

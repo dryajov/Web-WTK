@@ -1,14 +1,18 @@
-package Web::WTK::Runner::PlackAppRunner;
+package Web::WTK::Handler::PlackAppHandler;
 
 use Moose;
 
-with 'Web::WTK::Roles::Runable';
+extends 'Web::WTK::Handler';
 
 use Web::WTK::Request::PlackRequestBuilder;
 
-sub run {
+sub handle {
 	my ( $self, $env ) = @_;
+
 	my $req = Web::WTK::Request::PlackRequestBuilder->new( env => $env );
+	my $res = $self->SUPER::handle($req);
+
+	return $res;
 }
 
 __PACKAGE__->meta->make_immutable;
