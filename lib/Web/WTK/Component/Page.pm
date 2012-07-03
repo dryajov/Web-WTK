@@ -8,8 +8,8 @@ use Web::WTK::Markup::ElementStream;
 extends 'Web::WTK::Component::MarkupContainer';
 
 has 'title' => (
-	is  => 'rw',
-	isa => 'Str',
+	is   => 'rw',
+	isa  => 'Str',
 );
 
 has 'parameters' => (
@@ -18,12 +18,20 @@ has 'parameters' => (
 	required => 1,
 );
 
+has 'context' => (
+	is       => 'rw',
+	isa      => 'Web::WTK::Context',
+	required => 1,
+);
+
 sub BUILDARGS {
 	my ($class) = shift;
 
+	my %params = %{ @_ ? @_ : () };
 	my $name = $class;
 	$name =~ s/::/_/;
-	return { id => lc $name, @_ };
+	$params{id} = lc $name;
+	return %params;
 }
 
 sub render {

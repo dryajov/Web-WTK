@@ -23,6 +23,8 @@ sub render {
         $clone->remove_attr("wtk-id");
         $elm->child($clone);
     }
+    
+    $self->SUPER::render($elm);
 
     return $elm;
 }

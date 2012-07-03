@@ -4,17 +4,24 @@ use Moose::Role;
 
 requires 'parent';
 
-sub get_component_url {
-    my $self = shift;
+sub get_component_path {
+	my $self = shift;
 
-    my $url = "";
-    my $parent = $self->parent;
-    do{
-        $url = $parent->id . "/" . $url;
-    }while($parent = $parent->parent);
-    
-    $url .= $self->id;
-    return $url;
+	my @path;
+	push @path, $self->id;
+	my $parent = $self->parent;
+	while ($parent) {
+		push @path, $parent->id;
+		$parent = $parent->parent;
+	}
+
+	return reverse @path;
+}
+
+sub get_component_url {
+	my $self = shift;
+
+	return join '/', $self->get_component_path;
 }
 
 no Moose::Role;

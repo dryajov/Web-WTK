@@ -29,7 +29,7 @@ has 'handle' => (
 sub _get_markup {
 	my ( $self, $params ) = @_;
 
-	# TODO: Need to change to use some sort of factory to
+	# TODO: Need to change the bellow code to use some sort of factory to
 	# return the correct markup based on the current configuration
 	my $resource =
 	  Web::WTK::Resolver::ClassToMarkupResource->new( class => ref $self );

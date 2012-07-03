@@ -13,17 +13,19 @@ has 'rendered' => (
 sub construct { }
 
 # called right before rendering
+# gets the parameters that render reseives
 sub on_before_render { }
 
 # called right after rendering
+# gets the parameters that render reseives
 sub on_after_render { }
 
 sub BUILD {
 	my $self = shift;
 	$self->construct(@_);
-};
+}
 
-# make sure render is 
+# make sure render is
 # implemented by components
 requires 'render';
 

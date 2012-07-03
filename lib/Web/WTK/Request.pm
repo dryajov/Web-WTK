@@ -109,7 +109,8 @@ has 'parameters' => (
 	isa     => 'Hash::MultiValue',
 	default => sub {
 		my $s = shift;
-		Hash::MultiValue->new( $s->body_parameters->flatten, $s->query_parameters->flatten );
+		Hash::MultiValue->new( $s->body_parameters->flatten,
+			$s->query_parameters->flatten );
 	},
 	lazy => 1,
 );

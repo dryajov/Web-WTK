@@ -17,9 +17,9 @@ has '_indent_level' => (
 );
 
 sub print {
-	my $self = shift;
-
-	return $self->_to_html( $self->markup );
+	my ( $self, $markup ) = @_;
+	
+	return $self->_to_html( $markup );
 }
 
 sub _to_html {

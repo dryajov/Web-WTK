@@ -2,31 +2,84 @@ package Web::WTK;
 
 use MooseX::Singleton;
 
+use Cwd 'abs_path';
+
 has 'mounts' => (
 	traits  => ['Hash'],
-	is      => 'rw',
+	is      => 'ro',
 	isa     => 'HashRef',
 	default => sub { {} },
 	lazy    => 1,
 	handles => {
-		set_mount    => 'set',
-		get_mount    => 'get',
-		has_mounts   => 'is_empty',
-		num_mounts   => 'count',
-		delete_mount => 'delete',
-		mount_pairs  => 'kv',
+		get_mount           => 'get',
+		has_mounts          => 'is_empty',
+		num_mounts          => 'count',
+		mount_pairs         => 'kv',
+		get_all_mount_paths => 'keys',
+		exists_mount        => 'defined',
 	},
 );
 
 has 'resources_path' => (
-	is  => 'rw',
-	isa => 'Str'
+	is      => 'ro',
+	isa     => 'Str',
+	builder => 'build_resource_path',
 );
 
-has 'hadnlers' => (
-	is  => 'ro',
-	isa => 'Web::WTK::Roles::Handleable',
+sub build_resource_path {
+	abs_path($0);
+}
+
+has 'src_base' => (
+	is      => 'ro',
+	isa     => 'Str',
+	builder => 'build_src_base',
 );
+
+sub build_src_base {
+	abs_path($0);
+}
+
+# the virtual url base of the application
+has 'app_base' => (
+	is      => 'ro',
+	isa     => 'Str',
+	builder => 'build_app_base',
+);
+
+sub build_app_base {
+	"/";
+}
+
+has 'runner' => (
+	is       => 'rw',
+	isa      => 'Web::WTK::AppRunner',
+	required => 1,
+);
+
+has 'printer' => (
+	is      => 'rw',
+	isa     => 'Web::WTK::Printers::Roles::Printable',
+	default => sub { Web::WTK::Printers::Html->new },
+);
+
+sub BUILDARGS {
+	my ( $self, %args ) = @_;
+
+	my $mounts = $args{mounts};
+	my %fixed_mounts;
+
+	# remove trailing /
+	while ( my ( $path, $page ) = each %$mounts ) {
+		$path = s|\z||x
+		  if $path !~ m|^/$|;
+		$fixed_mounts{$path} = $page;
+	}
+
+	$args{mounts} = \%fixed_mounts;
+
+	return \%args;
+}
 
 __PACKAGE__->meta->make_immutable;
 no Moose;

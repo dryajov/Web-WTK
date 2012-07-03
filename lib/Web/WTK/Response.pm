@@ -7,8 +7,10 @@ use IO::Handle;
 use Carp;
 
 has 'status' => (
-	is  => 'rw',
-	isa => 'Int',
+	is      => 'rw',
+	isa     => 'Int',
+	default => "200",
+	lazy    => 1,
 );
 
 has 'headers' => (
