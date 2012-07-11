@@ -1,8 +1,9 @@
 package Web::WTK;
 
 use MooseX::Singleton;
-
 use Cwd 'abs_path';
+
+use Web::WTK::Printers::Roles::Printable;
 
 has 'mounts' => (
 	traits  => ['Hash'],

@@ -57,7 +57,7 @@ sub add {
 	$self->children->{ $component->id } = $component;
 	$component->parent($self);
 
-	$self->set_addressable( $component->get_component_url )
+	$self->set_addressable( $component->get_component_url, $component )
 	  if $component->does('Web::WTK::Roles::Addressable');
 
 	return $component;

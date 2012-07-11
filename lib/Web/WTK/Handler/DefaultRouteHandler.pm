@@ -15,16 +15,17 @@ sub _get_page_path {
 	my ( $self, $path_info ) = @_;
 
 	my $path     = $path_info;
-	my $app_base = Web::WTK->instanse->app_base;
+	my $app_base = Web::WTK->instance->app_base;
 
-	$path =~ s|^$app_base||g;    # strip app_base from path
+	$path =~ s|^\Q$app_base\E||g
+	  if $app_base ne $path;    # strip app_base from path
 
 	my $component_path;
-	while ( !Web::WTK->instanse->exists_mount($path) || length $path ) {
+	while ( length $path && !Web::WTK->instance->exists_mount($path) ) {
 		my ( $path_left, $reduced ) =
-		  $path =~ s|^(.*)(/)|$1|g;    # reduse the path
+		  $path =~ s|^(.*)(?:/)|$1|g;    # reduce the path
 		$path = $path_left;
-		$component_path .= $reduced;
+		$component_path .= $reduced if $reduced;
 	}
 
 	return ( $path, $component_path );
@@ -36,7 +37,10 @@ sub handle {
 	my ( $path, $component_path ) =
 	  $self->_get_page_path( $ctx->request->path_info );
 
-	return 1;
+	$ctx->page_path($path);
+	$ctx->component_path($component_path);
+
+	return;
 }
 
 __PACKAGE__->meta->make_immutable;

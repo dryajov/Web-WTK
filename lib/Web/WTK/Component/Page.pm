@@ -27,11 +27,11 @@ has 'context' => (
 sub BUILDARGS {
 	my ($class) = shift;
 
-	my %params = %{ @_ ? @_ : () };
+	my %params = @_ ? @_ : ();
 	my $name = $class;
 	$name =~ s/::/_/;
 	$params{id} = lc $name;
-	return %params;
+	return \%params;
 }
 
 sub render {

@@ -1,10 +1,12 @@
 package Web::WTK::Response;
 
 use Moose;
+use Moose::Util::TypeConstraints;
+
+use Carp;
 
 use Scalar::Util;
 use IO::Handle;
-use Carp;
 
 has 'status' => (
 	is      => 'rw',
@@ -20,6 +22,8 @@ has 'headers' => (
 	handles => [qw/header content_type content_length content_encoding/],
 	lazy    => 1,
 );
+
+class_type 'IO::Handle';
 
 has 'body' => (
 	is  => 'rw',

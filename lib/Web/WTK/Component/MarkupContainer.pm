@@ -2,7 +2,7 @@ package Web::WTK::Component::MarkupContainer;
 
 use Moose;
 
-use Web::WTK::Parser::XML::SAXParser;
+use Web::WTK::Parser::XML::SAX::Parser;
 use Web::WTK::Markup::Stream;
 use Web::WTK::Markup::ElementStream;
 use Web::WTK::Resolver::ClassToMarkupResource;
@@ -18,7 +18,7 @@ has 'markup' => (
 
 has 'parser' => (
 	is  => 'rw',
-	isa => 'Web::WTK::Parser::XML::SAXParser',
+	isa => 'Web::WTK::Parser::XML::SAX::Parser',
 );
 
 has 'handle' => (
@@ -35,9 +35,9 @@ sub _get_markup {
 	  Web::WTK::Resolver::ClassToMarkupResource->new( class => ref $self );
 
 	$self->handle( $resource->open );
-	$self->parser( Web::WTK::Parser::XML::SAXParser->new() );
+	$self->parser( Web::WTK::Parser::XML::SAX::Parser->new() );
 
-	return $self->{parser}->parse( $self->{handle} );
+	return $self->parser->parse( $self->handle );
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -1,9 +1,9 @@
-package Web::WTK::Parser::XML::SAXParser;
+package Web::WTK::Parser::XML::SAX::Parser;
 
 use Moose;
 
 use XML::SAX::ParserFactory;
-use Web::WTK::Parser::XML::SAXParserHandler;
+use Web::WTK::Parser::XML::SAX::ParserHandler;
 
 extends 'Web::WTK::Parser';
 
@@ -12,18 +12,18 @@ has 'parser' => (
 	builder => '_build_parser',
 );
 
-has 'handler' => (
-	is      => 'ro',
-	isa     => 'Web::WTK::Parser::XML::SAXParserHandler',
-	default => sub { Web::WTK::Parser::XML::SAXParserHandler->new() },
-	lazy    => 1,
-);
-
 sub _build_parser {
 	my ($self) = @_;
 
 	return XML::SAX::ParserFactory->parser( Handler => $self->handler );
 }
+
+has 'handler' => (
+	is      => 'ro',
+	isa     => 'Web::WTK::Parser::XML::SAX::ParserHandler',
+	default => sub { Web::WTK::Parser::XML::SAX::ParserHandler->new() },
+	lazy    => 1,
+);
 
 sub parse {
 	my $self    = shift;

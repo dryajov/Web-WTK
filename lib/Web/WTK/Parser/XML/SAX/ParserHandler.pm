@@ -1,4 +1,4 @@
-package Web::WTK::Parser::XML::SAXParserHandler;
+package Web::WTK::Parser::XML::SAX::ParserHandler;
 
 use Web::WTK::Markup::Element;
 
@@ -32,7 +32,8 @@ sub characters {
 	my $self = shift;
 	my $data = shift;
 
-	# TODO: This is very crude, we need proper content filters
+	# TODO: This is very crude, 
+	# we need proper content filters
 	my $contents = $data->{Data};
 	$contents =~ s/[\s|\n]+/ /;
 	if ( $contents !~ /^\s$/ ) {

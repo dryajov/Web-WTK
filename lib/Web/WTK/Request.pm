@@ -82,8 +82,9 @@ has 'raw_body' => (
 );
 
 has 'cookies' => (
-	is  => 'rw',
-	isa => 'HashRef',
+	is      => 'rw',
+	isa     => 'HashRef',
+	default => sub { {} },
 );
 
 has 'headers' => (

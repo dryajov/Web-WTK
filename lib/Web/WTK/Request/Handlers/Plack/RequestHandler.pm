@@ -1,4 +1,4 @@
-package Web::WTK::Handler::Plack::RequestHandler;
+package Web::WTK::Request::Handlers::Plack::RequestHandler;
 
 use Moose;
 

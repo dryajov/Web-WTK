@@ -1,12 +1,14 @@
 package Web::WTK::Context;
 
 use Moose;
+use Moose::Util::TypeConstraints;
 
 use Web::WTK::Response;
+use Web::WTK::Exception::Base;
 
 has 'env' => (
 	is  => 'rw',
-	isa => 'Any',    # can't use a type here, since it can be virtualy anything
+	isa => 'HashRef',
 );
 
 has 'request' => (
@@ -33,19 +35,20 @@ has 'page_path' => (
 
 has 'component_path' => (
 	is  => 'rw',
-	isa => 'Str',
+	isa => 'Str | Undef',
 );
 
-has 'page_version' => (
-	is  => 'rw',
-	isa => 'Int',
-);
-
-# provission for a session
 has 'session' => (
 	is  => 'rw',
-	isa => 'Any',    # change to the correct type
+	isa => 'Web::WTK::Session',
 );
+
+has 'expire_session' => (
+	is  => 'rw',
+	isa => 'Bool',
+);
+
+class_type 'Web::WTK::Exception::Base';
 
 has 'error' => (
 	is  => 'rw',

@@ -4,12 +4,8 @@ use Moose;
 
 with 'Web::WTK::Roles::Handleable';
 
-use Try::Tiny;
-use Module::Load;
-
 use Web::WTK;
 use Web::WTK::Printers::Html;
-use Web::WTK::Exception::EndpointExceptions;
 
 sub handle {
 	my ( $self, $ctx ) = @_;
@@ -19,10 +15,10 @@ sub handle {
 
 	my $markup = $ctx->page->render;
 	$ctx->response->body(
-		Web::WTK->instanse->print($markup)
+		Web::WTK->instance->printer->print($markup)
 	);
 
-	return 1;
+	return;
 }
 
 __PACKAGE__->meta->make_immutable;
