@@ -1,15 +1,15 @@
-package Web::WTK::Component::Page;
+package Web::WTK::Component::Container::Page;
 
 use Moose;
 
 use Web::WTK::Markup::Stream;
 use Web::WTK::Markup::ElementStream;
 
-extends 'Web::WTK::Component::MarkupContainer';
+extends 'Web::WTK::Component::Container::MarkupContainer';
 
 has 'title' => (
-	is   => 'rw',
-	isa  => 'Str',
+	is  => 'rw',
+	isa => 'Str',
 );
 
 has 'parameters' => (
@@ -23,6 +23,29 @@ has 'context' => (
 	isa      => 'Web::WTK::Context',
 	required => 1,
 );
+
+has 'uri' => (
+	is      => 'rw',
+	isa     => 'URI',
+	builder => '_build_page_uri',
+	lazy    => 1,
+	handles => {
+		page_url           => 'as_string',
+		page_relative_path => 'path'
+	},
+);
+
+sub _build_page_uri {
+	my $self = shift;
+
+	my $host_port  = $self->context->request->host_port;
+	my $scheme     = $self->context->request->scheme;
+	my $page_route = $self->context->route_info->page_route;
+	my $app_base   = Web::WTK->instance()->app_base;
+
+	my $url = $scheme . "://" . $host_port . $app_base . $page_route;
+	return URI->new($url)->canonical();
+}
 
 sub BUILDARGS {
 	my ($class) = shift;

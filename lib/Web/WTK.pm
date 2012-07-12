@@ -1,5 +1,7 @@
 package Web::WTK;
 
+use namespace::autoclean;
+
 use MooseX::Singleton;
 use Cwd 'abs_path';
 
@@ -8,7 +10,7 @@ use Web::WTK::Printers::Roles::Printable;
 has 'mounts' => (
 	traits  => ['Hash'],
 	is      => 'ro',
-	isa     => 'HashRef',
+	isa     => 'HashRef[Str]',
 	default => sub { {} },
 	lazy    => 1,
 	handles => {
@@ -72,10 +74,12 @@ sub BUILDARGS {
 
 	# remove trailing /
 	while ( my ( $path, $page ) = each %$mounts ) {
-		$path = s|\z||x
-		  if $path !~ m|^/$|;
-		$fixed_mounts{$path} = $page;
+		$path =~ s|\z/||x;
+		$fixed_mounts{ lc $path } = $page;
 	}
+
+	$args{app_base} = "/$args{app_base}"
+	  if $args{app_base} !~ m|^/|;
 
 	$args{mounts} = \%fixed_mounts;
 
@@ -83,6 +87,4 @@ sub BUILDARGS {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
-
 1;

@@ -1,5 +1,7 @@
 package Web::WTK::Roles::Renderable;
 
+use namespace::autoclean;
+
 use Moose::Role;
 
 has 'rendered' => (
@@ -8,10 +10,6 @@ has 'rendered' => (
 	default => 0,
 );
 
-# called inside the BUILD method
-# used to contruct the component
-sub construct { }
-
 # called right before rendering
 # gets the parameters that render reseives
 sub on_before_render { }
@@ -19,11 +17,6 @@ sub on_before_render { }
 # called right after rendering
 # gets the parameters that render reseives
 sub on_after_render { }
-
-sub BUILD {
-	my $self = shift;
-	$self->construct(@_);
-}
 
 # make sure render is
 # implemented by components
@@ -35,12 +28,13 @@ around 'render' => sub {
 	my $self = shift;
 
 	$self->on_before_render(@_);
+
 	my $result = $self->$orig(@_);
+
 	$self->on_after_render(@_);
 	$self->rendered(1);
 
 	return $result;
 };
 
-no Moose::Role;
 1;

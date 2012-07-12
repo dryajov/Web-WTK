@@ -1,5 +1,7 @@
 package Web::WTK::Printers::Html;
 
+use namespace::autoclean;
+
 use Moose;
 
 use Web::WTK::Markup::Element;
@@ -87,5 +89,4 @@ sub _to_html {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

@@ -1,8 +1,10 @@
-package Web::WTK::Handler::DefaultPageRenderHandler;
+package Web::WTK::RequestHandler::DefaultPageRenderHandler;
+
+use namespace::autoclean;
 
 use Moose;
 
-with 'Web::WTK::Roles::Handleable';
+with 'Web::WTK::RequestHandler::Handler';
 
 use Web::WTK;
 use Web::WTK::Printers::Html;
@@ -22,6 +24,4 @@ sub handle {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
-
 1;

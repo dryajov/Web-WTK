@@ -1,10 +1,12 @@
 package Web::WTK::Roles::Addressable;
 
+use namespace::autoclean;
+
 use Moose::Role;
 
 requires 'parent';
 
-sub get_component_path {
+sub get_component_parents {
 	my $self = shift;
 
 	my @path;
@@ -18,11 +20,10 @@ sub get_component_path {
 	return reverse @path;
 }
 
-sub get_component_url {
+sub get_component_path {
 	my $self = shift;
 
-	return join '/', $self->get_component_path;
+	return join '.', $self->get_component_parents;
 }
 
-no Moose::Role;
 1;

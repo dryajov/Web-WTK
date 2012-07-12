@@ -1,11 +1,20 @@
 package Web::WTK::Component::Container;
 
+use namespace::autoclean;
+
 use Moose;
 
 extends 'Web::WTK::Component';
 
 use Web::WTK::Exception::MarkupExceptions;
 use Try::Tiny;
+
+has 'is_root' => (
+	is      => 'rw',
+	isa     => 'Bool',
+	default => sub { shift->parent },
+	lazy    => 1,
+);
 
 has 'children' => (
 	traits  => ['Hash'],
@@ -25,22 +34,11 @@ has 'children' => (
 	}
 );
 
-has 'addressable' => (
-	traits  => ['Hash'],
+has '_comp_order' => (
 	is      => 'rw',
-	isa     => 'HashRef[Web::WTK::Roles::Addressable]',
-	default => sub { {} },
+	isa     => 'ArrayRef',
+	default => sub { [] },
 	lazy    => 1,
-	handles => {
-		set_addressable    => 'set',
-		get_addressable    => 'get',
-		has_addressables   => 'is_empty',
-		num_addressables   => 'count',
-		delete_addressable => 'delete',
-		addressable_pairs  => 'kv',
-		addressable_ids    => 'keys',
-		has_addressable    => 'exists',
-	}
 );
 
 sub get_component_by_id {
@@ -48,6 +46,41 @@ sub get_component_by_id {
 	my $id   = shift;
 
 	my $component = $self->get_child($id);
+	if ( $component && eval { $component->does(__PACKAGE__) } ) {
+		my $found = $component->get_component_by_id($id);
+		$component = $found;
+	}
+
+	return $component;
+}
+
+sub get_component_by_abs_route {
+	my $self = shift;
+
+	my $root = $self->is_root
+	  if !$self->is_root;
+
+	return __PACKAGE__->_find_component_by_route( @_, $root );
+}
+
+sub get_component_by_route {
+	my $self = shift;
+	return __PACKAGE__->_find_component_by_route( @_, $self );
+}
+
+sub _find_component_by_route {
+	my ( $class, $path, $component ) = @_;
+
+	my @parts = split /\./, $path;
+
+	shift @parts
+	  if $parts[0] eq lc( ref($component) );
+
+	for my $part (@parts) {
+		$component = $component->get_child($part);
+		last if !$component;
+	}
+
 	return $component;
 }
 
@@ -56,12 +89,15 @@ sub add {
 
 	$self->children->{ $component->id } = $component;
 	$component->parent($self);
+	push @{$self->_comp_order}, $component->id;
 
-	$self->set_addressable( $component->get_component_url, $component )
-	  if $component->does('Web::WTK::Roles::Addressable');
+	# contruct the component
+	$component->construct
+	  if eval { $component->does('Web::WTK::Component::Construct') };
 
 	return $component;
 }
+
 
 sub render {
 	my ( $self, $markup ) = @_;
@@ -72,7 +108,7 @@ sub render {
 	my $elements = Web::WTK::Markup::ElementStream->new( stream => $stream );
 
 	while ( my $elm = $elements->next ) {
-		my $id = $elm->id() || next;
+		my $id = $elm->id || next;
 		my $component = $self->get_component_by_id($id);
 		if ($component) {
 			$elm->component($component);

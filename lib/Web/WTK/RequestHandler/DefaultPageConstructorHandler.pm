@@ -1,8 +1,10 @@
-package Web::WTK::Handler::DefaultPageLoaderHandler;
+package Web::WTK::RequestHandler::DefaultPageConstructorHandler;
+
+use namespace::autoclean;
 
 use Moose;
 
-with 'Web::WTK::Roles::Handleable';
+with 'Web::WTK::RequestHandler::Handler';
 
 use Try::Tiny;
 use Module::Load;
@@ -15,10 +17,11 @@ sub _load_page {
 	my ( $self, $ctx, $path ) = @_;
 
 	# TODO: need to construct proper identifier with version info
-	my $page       = $ctx->session->get_page($path);
-	my $page_class = Web::WTK->instance->get_mount($path);
+	my $session    = $ctx->session;
+	my $page       = $session->get_page($path);
 	my $params     = $ctx->request->parameters;
-
+	my $page_class = Web::WTK->instance->get_mount($path);
+	
 	if ($page) {
 		$page->parameters($params);
 		$page->context($ctx);
@@ -40,6 +43,8 @@ sub _load_page {
 				parameters => $params,
 				context    => $ctx
 			);
+			$page->construct;
+			$page->bootstrap;
 		}
 		catch {
 
@@ -49,7 +54,7 @@ sub _load_page {
 			throw Web::WTK::Exception::EndpointExeptions::InternalError->new;
 		};
 
-		$ctx->session->set_page($path, $page);
+		$ctx->session->set_page( $path, $page );
 	}
 
 	return $page;
@@ -58,7 +63,7 @@ sub _load_page {
 sub handle {
 	my ( $self, $ctx ) = @_;
 
-	my $page_path = $ctx->page_path;
+	my $page_path = $ctx->route_info->page_route;
 
 	my $page = $self->_load_page( $ctx, $page_path );
 	$ctx->page($page);
@@ -67,6 +72,4 @@ sub handle {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
-
 1;

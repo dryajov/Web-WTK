@@ -1,5 +1,7 @@
 package Web::WTK::Session;
 
+use namespace::autoclean;
+
 use Moose;
 
 use Web::WTK::Context;
@@ -13,7 +15,7 @@ has 'id' => (
 has 'page_store' => (
 	traits  => ['Hash'],
 	is      => 'rw',
-	isa     => 'HashRef[Web::WTK::Component::Page]',
+	isa     => 'HashRef[Web::WTK::Component::Container::Page]',
 	default => sub { {} },
 	handles => {
 		set_page    => 'set',
@@ -41,6 +43,4 @@ has 'data' => (
 );
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
-
 1;

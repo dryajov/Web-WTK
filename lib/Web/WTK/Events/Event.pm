@@ -1,4 +1,4 @@
-package Web::WTK::Roles::Event;
+package Web::WTK::Events::Event;
 
 use namespace::autoclean;
 

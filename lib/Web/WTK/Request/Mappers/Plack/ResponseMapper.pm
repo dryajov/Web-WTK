@@ -1,10 +1,12 @@
-package Web::WTK::Request::Handlers::Plack::ResponseHandler;
+package Web::WTK::Request::Mappers::Plack::ResponseMapper;
+
+use namespace::autoclean;
 
 use Moose;
 
-with 'Web::WTK::Roles::Handleable';
+with 'Web::WTK::Request::Mappers::Mapper';
 
-sub handle {
+sub map {
 	my ( $self, $ctx ) = @_;
 
 	# TODO: for now "finalize" returns a plack array ref,
@@ -13,5 +15,4 @@ sub handle {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

@@ -1,5 +1,7 @@
 package Web::WTK::Parser::XML::SAX::Parser;
 
+use namespace::autoclean;
+
 use Moose;
 
 use XML::SAX::ParserFactory;
@@ -34,5 +36,4 @@ sub parse {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

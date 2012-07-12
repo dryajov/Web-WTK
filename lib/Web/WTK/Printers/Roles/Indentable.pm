@@ -1,5 +1,7 @@
 package Web::WTK::Printers::Roles::Indentable;
 
+use namespace::autoclean;
+
 use Moose::Role;
 
 with 'Web::WTK::Printers::Roles::Printable';
@@ -60,5 +62,4 @@ around '_generate_str_content' => sub {
 	return $content;
 };
 
-no Moose;
 1;

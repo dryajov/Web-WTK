@@ -1,5 +1,7 @@
 package Web::WTK::Resolver::ClassToMarkupResource;
 
+use namespace::autoclean;
+
 use Moose;
 use IO::File;
 
@@ -32,5 +34,4 @@ sub _get_path {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

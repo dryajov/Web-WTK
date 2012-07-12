@@ -1,56 +1,61 @@
 package Web::WTK::AppRunner;
 
-use MooseX::Singleton;
+use namespace::autoclean;
+
+use Moose;
 with 'Web::WTK::Roles::Runnable';
 
-use Web::WTK::RequestProcessor;
+use Web::WTK::Request::Mappers::Mapper;
+use Web::WTK::Session::SessionStash;
+use Web::WTK::RequestHandler;
 use Web::WTK::Context;
 use Web::WTK::Session;
 
-use Web::WTK::Session::Roles::Handleable;
-
 has 'request_processor' => (
 	is      => 'rw',
-	isa     => 'Web::WTK::RequestProcessor',
-	default => sub { Web::WTK::RequestProcessor->new },
+	isa     => 'Web::WTK::RequestHandler',
+	default => sub { Web::WTK::RequestHandler->new },
 );
 
 has 'request_mapper' => (
 	is       => 'rw',
-	isa      => 'Web::WTK::Roles::Handleable',
+	isa      => 'Web::WTK::Request::Mappers::Mapper',
 	required => 1,
 );
 
 has 'response_mapper' => (
 	is       => 'rw',
-	isa      => 'Web::WTK::Roles::Handleable',
+	isa      => 'Web::WTK::Request::Mappers::Mapper',
 	required => 1,
 );
 
-has 'session_handler' => (
-	is       => 'rw',
-	isa      => 'Web::WTK::Session::Roles::Handleable',
-	required => 1,
+has 'session_stash' => (
+	is  => 'rw',
+	isa => 'Web::WTK::Session::SessionStash',
 );
 
+# by default expects a hash with
+# the evironment, similar to that of
+# CGI or plack
 sub run {
 	my $self = shift;
-	my $env  = shift;
-
-	my $ctx = Web::WTK::Context->new( env => $env );
+	my $ctx  = shift;
 
 	# construct the request and session
-	# (response is constructed implicit)
-	my $req     = $self->request_mapper->handle($ctx);
-	my $session = $self->session_handler->handle($ctx);
+	# (response is constructed implicitelly)
+	my $req = $self->request_mapper->map($ctx);
 
+	# fetch session or create a new one
+	$self->session_stash->get($ctx);
 	$ctx->request($req);
-	$ctx->session($session);
+
 	$self->request_processor->process($ctx);
 
-	return $self->response_mapper->handle($ctx);
+	# detach any transient data
+	$self->session_stash->detach($ctx);
+
+	return $self->response_mapper->map($ctx);
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

@@ -1,5 +1,7 @@
 package Web::WTK::Markup::Stream;
 
+use namespace::autoclean;
+
 use Moose;
 
 # the marup elements tree

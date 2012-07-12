@@ -1,4 +1,4 @@
-package Web::WTK::Component::Panel;
+package Web::WTK::Component::Container::Panel;
 
 use Moose;
 
@@ -6,7 +6,7 @@ use Web::WTK::Markup::Element;
 use Web::WTK::Markup::Stream;
 use Web::WTK::Markup::ElementStream;
 
-extends 'Web::WTK::Component::MarkupContainer';
+extends 'Web::WTK::Component::Container::MarkupContainer';
 
 sub render {
 	my ( $self, $markup ) = @_;

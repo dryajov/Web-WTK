@@ -1,11 +1,13 @@
-package Web::WTK::Component::List;
+package Web::WTK::Component::Simple::List;
+
+use namespace::autoclean;
 
 use Moose;
 use Carp;
 
 use Web::WTK::Markup::Element;
 
-extends 'Web::WTK::Component';
+extends 'Web::WTK::Component::Simple';
 
 has 'list' => (
     is       => 'rw',

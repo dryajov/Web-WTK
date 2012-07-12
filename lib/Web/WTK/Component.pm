@@ -1,6 +1,10 @@
 package Web::WTK::Component;
 
+use namespace::autoclean;
+
 use Moose;
+
+use Web::WTK::Markup::Element;
 
 with 'Web::WTK::Roles::Renderable';
 
@@ -28,6 +32,23 @@ has 'id' => (
 	required => 1
 );
 
+has 'elm' => (
+	is       => 'rw',
+	isa      => 'Web::WTK::Markup::Element',
+	weak_ref => 1,
+);
+
+sub get_root_component {
+	my $self   = shift;
+	my $parent = $self->parent;
+	while ( $parent->parent ) {
+		if ( defined $parent->parent ) {
+			$parent = $parent->parent;
+		}
+	}
+	return $parent;
+}
+
 sub render {
 	my ( $self, $markup ) = @_;
 	if ( !$self->rendered ) {
@@ -40,6 +61,5 @@ sub render {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;
 

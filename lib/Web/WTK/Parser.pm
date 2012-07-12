@@ -1,7 +1,8 @@
 package Web::WTK::Parser;
 
-use Moose;
+use namespace::autoclean;
 
+use Moose;
 use Carp;
 
 # the root of the parsed doc

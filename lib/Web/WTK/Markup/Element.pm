@@ -1,5 +1,7 @@
 package Web::WTK::Markup::Element;
 
+use namespace::autoclean;
+
 use Moose;
 
 use Readonly;
@@ -152,5 +154,4 @@ sub clone {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

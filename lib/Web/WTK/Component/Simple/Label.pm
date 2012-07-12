@@ -1,10 +1,10 @@
-package Web::WTK::Component::Label;
-use strict;
-use warnings;
+package Web::WTK::Component::Simple::Label;
+
+use namespace::autoclean;
 
 use Moose;
 
-extends 'Web::WTK::Component';
+extends 'Web::WTK::Component::Simple';
 
 has 'text' => (
     is      => 'rw',

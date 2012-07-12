@@ -31,8 +31,8 @@ sub BUILD {
 	my $self = shift;
 
 	$self->body( $self->_parse_request_body );
-	$self->cookies( $self->_parse_cookies );
 	$self->uri( $self->_parse_uri );
+	$self->cookies( $self->_parse_cookies );
 	$self->content( $self->_parse_content );
 	$self->uploads( $self->_parse_uploads );
 	$self->headers( $self->_parse_headers );
@@ -50,9 +50,7 @@ sub BUILD {
 	$self->protocol( $self->env->{SERVER_PROTOCOL} );
 	$self->request_uri( $self->env->{REQUEST_URI} );
 	$self->path_info( $self->env->{PATH_INFO} );
-	$self->path( $self->path_info || "/" );
 	$self->script_name( $self->env->{SCRIPT_NAME} );
-	$self->scheme( $self->env->{'psgi.url_scheme'} );
 
 	my $input = IO::Handle->new->fdopen( $self->env->{'psgi.input'}, "r" );
 	$self->input_handle($input);
@@ -151,18 +149,21 @@ sub _parse_cookies {
 	$cookie_str = $self->env->{HTTP_COOKIE};
 
 	my %results;
-	my @pairs = grep /=/, split "[;,] ?", $self->_cookie_str;
-	for my $pair (@pairs) {
 
-		# trim leading trailing whitespace
-		$pair =~ s/^\s+//;
-		$pair =~ s/\s+$//;
+	if ( $self->_cookie_str ) {
+		my @pairs = grep /=/, split "[;,] ?", $self->_cookie_str;
+		for my $pair (@pairs) {
 
-		my ( $key, $value ) = map URI::Escape::uri_unescape($_),
-		  split( "=", $pair, 2 );
+			# trim leading trailing whitespace
+			$pair =~ s/^\s+//;
+			$pair =~ s/\s+$//;
 
-		# Take the first one like CGI.pm or rack do
-		$results{$key} = $value unless exists $results{$key};
+			my ( $key, $value ) = map URI::Escape::uri_unescape($_),
+			  split( "=", $pair, 2 );
+
+			# Take the first one like CGI.pm or rack do
+			$results{$key} = $value unless exists $results{$key};
+		}
 	}
 
 	$self->_cookie_str($cookie_str);
@@ -206,8 +207,8 @@ sub _parse_request_body {
 		$buffer->print($chunk) if $buffer;
 
 		if ( $read == 0 && $spin++ > 2000 ) {
-			Carp::croak
-"Bad Content-Length: maybe client disconnect? ($cl bytes remaining)";
+			Carp::croak "Bad Content-Length: maybe ",
+			  "client disconnect? ($cl bytes remaining)";
 		}
 	}
 

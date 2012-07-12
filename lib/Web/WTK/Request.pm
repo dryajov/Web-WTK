@@ -1,5 +1,7 @@
 package Web::WTK::Request;
 
+use namespace::autoclean;
+
 use Moose;
 use Moose::Util::TypeConstraints;
 
@@ -95,11 +97,6 @@ has 'headers' => (
 	],
 );
 
-has 'hostname' => (
-	is  => 'rw',
-	isa => 'Str',
-);
-
 has 'query_keywords' => (
 	is  => 'rw',
 	isa => 'ArrayRef',
@@ -114,11 +111,6 @@ has 'parameters' => (
 			$s->query_parameters->flatten );
 	},
 	lazy => 1,
-);
-
-has 'path' => (
-	is  => 'rw',
-	isa => 'Str',
 );
 
 has 'path_info' => (
@@ -143,16 +135,17 @@ has 'secure' => (
 	lazy    => 1,
 );
 
-has 'scheme' => (
-	is => 'rw',
-
-	#isa => enum(qw/http https/),
-	isa => 'Str',
-);
-
 has 'uri' => (
-	is  => 'rw',
-	isa => 'URI',
+	is      => 'rw',
+	isa     => 'URI',
+	handles => {
+		hostname  => 'host',
+		path      => 'path',
+		ihost     => 'ihost',
+		port      => 'port',
+		scheme    => 'scheme',
+		host_port => 'host_port',
+	}
 );
 
 has 'user' => (
@@ -190,5 +183,4 @@ has 'uploads' => (
 );
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

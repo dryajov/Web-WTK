@@ -1,5 +1,7 @@
 package Web::WTK::Request::Upload;
 
+use namespace::autoclean;
+
 use Carp ();
 use Moose;
 
@@ -58,5 +60,4 @@ sub basename {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 1;

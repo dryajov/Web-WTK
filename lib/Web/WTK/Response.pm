@@ -1,5 +1,7 @@
 package Web::WTK::Response;
 
+use namespace::autoclean;
+
 use Moose;
 use Moose::Util::TypeConstraints;
 
@@ -161,6 +163,4 @@ sub _date {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
-
 1;

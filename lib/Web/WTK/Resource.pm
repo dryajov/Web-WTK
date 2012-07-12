@@ -1,5 +1,7 @@
 package Web::WTK::Resource;
 
+use namespace::autoclean;
+
 use Moose;
 use File::Basename;
 
@@ -58,6 +60,4 @@ sub BUILD {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
-
 1;
