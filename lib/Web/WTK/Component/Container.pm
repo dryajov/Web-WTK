@@ -89,7 +89,8 @@ sub add {
 
 	$self->children->{ $component->id } = $component;
 	$component->parent($self);
-	push @{$self->_comp_order}, $component->id;
+
+	push @{ $self->_comp_order }, $component->id;
 
 	# contruct the component
 	$component->construct
@@ -98,14 +99,14 @@ sub add {
 	return $component;
 }
 
-
 sub render {
 	my ( $self, $markup ) = @_;
 
 	my $iterator = $markup->iterator();
 
-	my $stream = Web::WTK::Markup::Stream->new( markup => $markup );
-	my $elements = Web::WTK::Markup::ElementStream->new( stream => $stream );
+	my $elements =
+	  Web::WTK::Markup::ElementStream->new(
+		stream => Web::WTK::Markup::Stream->new( markup => $markup ) );
 
 	while ( my $elm = $elements->next ) {
 		my $id = $elm->id || next;

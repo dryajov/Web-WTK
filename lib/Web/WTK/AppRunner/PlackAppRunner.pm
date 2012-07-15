@@ -12,7 +12,7 @@ sub run {
 
 	my $ctx = Web::WTK::Context::PlackContext->new( env => $env );
 	$self->session_stash(
-		Web::WTK::Session::PlackSessionStash->new( context => $ctx ) 
+		Web::WTK::Session::PlackSessionStash->new 
 	);
 
 	$self->SUPER::run($ctx);

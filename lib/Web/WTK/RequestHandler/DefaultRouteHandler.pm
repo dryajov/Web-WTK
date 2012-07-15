@@ -14,18 +14,22 @@ use Web::WTK::Printers::Html;
 use Web::WTK::Exception::EndpointExceptions;
 
 # Parse the current request path and
-# extract its different elements
+# extract it's different elements
 #
-# a path  can contain:
+# a route should contain:
 #
 # - The requested page
 # - The current request count
 #	-used to look up the page in the page store for proper
 #	 state handling (mainly used but not limited to,
 #	 the back button problem)
+#
+# a route can contain:
+#
 # - Url embeded parameters
-# - Any externally accessible componnent and its
-#	associated event and parameters
+# - Any externally accessible componnent and it's
+#	associated parameters
+#
 sub _parse_location_info {
 	my ( $self, $ctx ) = @_;
 
@@ -45,7 +49,7 @@ sub _parse_location_info {
 		  if $app_base ne "/";
 
 		# get the page path from the request path
-		my ( $page_route, $reduced );
+		my ( $page_route, $reduced ) = ( "", "" );
 		while ( length $path ) {
 
 			if ( Web::WTK->instance->exists_mount($path) ) {
@@ -61,13 +65,13 @@ sub _parse_location_info {
 
 		$ctx->route_info->page_route($page_route);
 
-		# get the current request count from the request path
+		# get the current render count from the request path
 		my $render_count;
 		if ( length $path ) {
 
 			# reduce the path
 			$ctx->route_info->render_count( $1 || 0 )
-			  if $path =~ s|^/(\d)||;
+			  if $path =~ s|^/(\d+)||;
 		}
 
 		# get the component path and the event to be triggered

@@ -1,5 +1,7 @@
 package Web::WTK;
 
+# ABSTRACT: Main WTK module, holds global settings ans such
+
 use namespace::autoclean;
 
 use MooseX::Singleton;

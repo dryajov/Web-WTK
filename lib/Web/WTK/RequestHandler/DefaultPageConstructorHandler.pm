@@ -14,14 +14,16 @@ use Web::WTK::Printers::Html;
 use Web::WTK::Exception::EndpointExceptions;
 
 sub _load_page {
-	my ( $self, $ctx, $path ) = @_;
+	my ( $self, $ctx, $page_path ) = @_;
 
-	# TODO: need to construct proper identifier with version info
+	my $page_cache = $ctx->route_info->get_page_route_with_render_count
+	  || $page_path;
+
 	my $session    = $ctx->session;
-	my $page       = $session->get_page($path);
+	my $page       = $session->get_page($page_cache);
 	my $params     = $ctx->request->parameters;
-	my $page_class = Web::WTK->instance->get_mount($path);
-	
+	my $page_class = Web::WTK->instance->get_mount($page_path);
+
 	if ($page) {
 		$page->parameters($params);
 		$page->context($ctx);
@@ -44,7 +46,6 @@ sub _load_page {
 				context    => $ctx
 			);
 			$page->construct;
-			$page->bootstrap;
 		}
 		catch {
 
@@ -54,7 +55,7 @@ sub _load_page {
 			throw Web::WTK::Exception::EndpointExeptions::InternalError->new;
 		};
 
-		$ctx->session->set_page( $path, $page );
+		$ctx->session->set_page( $page_path, $page );
 	}
 
 	return $page;

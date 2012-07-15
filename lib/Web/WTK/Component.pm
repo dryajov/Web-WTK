@@ -41,11 +41,12 @@ has 'elm' => (
 sub get_root_component {
 	my $self   = shift;
 	my $parent = $self->parent;
+
 	while ( $parent->parent ) {
-		if ( defined $parent->parent ) {
-			$parent = $parent->parent;
-		}
+		$parent = $parent->parent
+		  if defined $parent->parent;
 	}
+
 	return $parent;
 }
 

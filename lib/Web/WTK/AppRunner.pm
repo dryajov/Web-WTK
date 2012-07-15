@@ -34,9 +34,7 @@ has 'session_stash' => (
 	isa => 'Web::WTK::Session::SessionStash',
 );
 
-# by default expects a hash with
-# the evironment, similar to that of
-# CGI or plack
+# expects a context object
 sub run {
 	my $self = shift;
 	my $ctx  = shift;

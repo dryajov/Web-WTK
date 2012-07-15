@@ -13,8 +13,10 @@ sub render {
 
 	my $panel_markup = $self->markup;
 
-	my $stream = Web::WTK::Markup::Stream->new( markup => $panel_markup );
-	my $elements = Web::WTK::Markup::ElementStream->new( stream => $stream );
+	my $elements =
+	  Web::WTK::Markup::ElementStream->new(
+		stream => Web::WTK::Markup::Stream->new( markup => $panel_markup ) )
+	  ;
 	while ( my $elm = $elements->next ) {
 
 		# skip everything before the 'panel' tag

@@ -7,7 +7,6 @@ use Moose;
 with 'Web::WTK::RequestHandler::Handler';
 
 use Web::WTK;
-use Web::WTK::Printers::Html;
 
 sub handle {
 	my ( $self, $ctx ) = @_;
@@ -16,10 +15,7 @@ sub handle {
 	$ctx->response->content_type('text/html');
 
 	my $markup = $ctx->page->render;
-	$ctx->response->body(
-		Web::WTK->instance->printer->print($markup)
-	);
-
+	$ctx->response->body( Web::WTK->instance->printer->print($markup) );
 	return;
 }
 

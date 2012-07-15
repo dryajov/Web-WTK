@@ -14,27 +14,16 @@ has 'text' => (
 	isa => 'Str',
 );
 
-has '_href' => (
-	is  => 'rw',
-	isa => 'Str',
-);
-
-# construct the component
-override construct => sub {
+sub _href {
 	my $self = shift;
 
-	my $component_url = '#';
+	my $href = '#';
 	if ( $self->on_click ) {
-		my $page_url = $self->page->page_url;
-
-		$page_url = "$page_url/"
-		  if $page_url !~ m|/$|;
-
-		$component_url = $page_url . $self->get_component_path;
+		$href = $self->generate_component_url;
 	}
 
-	$self->_href($component_url);
-};
+	return $href;
+}
 
 sub render {
 	my ( $self, $elm ) = @_;

@@ -29,30 +29,6 @@ has 'handle' => (
 	isa => 'IO::Handle',
 );
 
-sub bootstrap {
-	my ($self) = @_;
-
-	my $markup   = $self->markup;
-	my $iterator = $markup->iterator();
-
-	my $stream = Web::WTK::Markup::Stream->new( markup => $markup );
-	my $elements = Web::WTK::Markup::ElementStream->new( stream => $stream );
-
-	while ( my $elm = $elements->next ) {
-		my $id = $elm->id || next;
-		my $component = $self->get_component_by_id($id);
-		if ($component) {
-			$elm->component($component);
-			$component->elm($elm);
-			if ( eval { $component->isa(__PACKAGE__) } ) {
-				$component->bootstrap($elm);
-			}
-		}
-	}
-
-	return;
-}
-
 sub _get_markup {
 	my ( $self, $params ) = @_;
 

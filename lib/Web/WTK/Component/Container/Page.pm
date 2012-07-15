@@ -22,6 +22,11 @@ has 'context' => (
 	is       => 'rw',
 	isa      => 'Web::WTK::Context',
 	required => 1,
+	handles  => {
+		render_count    => sub { $_[0]->context->route_info->render_count },
+		component_route => sub { $_[0]->context->route_info->component_route },
+		page_route => sub { $_[0]->context->route_info->page_route },
+	},
 );
 
 has 'uri' => (
@@ -62,8 +67,9 @@ sub render {
 
 	my $markup = $self->markup;
 
-	my $stream = Web::WTK::Markup::Stream->new( markup => $markup );
-	my $elements = Web::WTK::Markup::ElementStream->new( stream => $stream );
+	my $elements =
+	  Web::WTK::Markup::ElementStream->new(
+		stream => Web::WTK::Markup::Stream->new( markup => $markup ) );
 	while ( my $elm = $elements->next ) {
 
 		if ( $elm->name eq 'title' && $self->title ) {

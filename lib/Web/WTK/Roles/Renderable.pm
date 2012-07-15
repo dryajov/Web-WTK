@@ -29,7 +29,14 @@ around 'render' => sub {
 
 	$self->on_before_render(@_);
 
-	my $result = $self->$orig(@_);
+	my $result;
+	if ( !$self->rendered ) {
+		$result = $self->$orig(@_);
+		$self->elm($result);
+	}
+	else {
+		$result = $self->elm;
+	}
 
 	$self->on_after_render(@_);
 	$self->rendered(1);

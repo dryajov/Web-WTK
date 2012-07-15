@@ -14,7 +14,7 @@ use Web::WTK::RequestHandler::DefaultPageRenderHandler;
 
 has 'route_handler' => (
 	is      => 'ro',
-	isa     => 'Web::WTK::RequestHandler::Handler',
+	does    => 'Web::WTK::RequestHandler::Handler',
 	builder => 'build_route_handler',
 	lazy    => 1,
 );
@@ -25,7 +25,7 @@ sub build_route_handler {
 
 has 'page_construct_handler' => (
 	is      => 'ro',
-	isa     => 'Web::WTK::RequestHandler::Handler',
+	does    => 'Web::WTK::RequestHandler::Handler',
 	builder => 'build_page_loader_handlers',
 	lazy    => 1,
 );
@@ -36,7 +36,7 @@ sub build_page_loader_handlers {
 
 has 'event_handler' => (
 	is      => 'ro',
-	isa     => 'Web::WTK::RequestHandler::Handler',
+	does    => 'Web::WTK::RequestHandler::Handler',
 	builder => 'build_event_handler',
 	lazy    => 1,
 );
@@ -48,7 +48,7 @@ sub build_event_handler {
 
 has 'render_handler' => (
 	is      => 'ro',
-	isa     => 'Web::WTK::RequestHandler::Handler',
+	does    => 'Web::WTK::RequestHandler::Handler',
 	builder => 'build_render_handler',
 	lazy    => 1,
 );
@@ -59,7 +59,7 @@ sub build_render_handler {
 
 has 'response_handler' => (
 	is      => 'ro',
-	isa     => 'Web::WTK::RequestHandler::Handler',
+	does    => 'Web::WTK::RequestHandler::Handler',
 	builder => 'build_response_handler',
 	lazy    => 1,
 );
@@ -70,7 +70,7 @@ sub build_response_handler {
 
 has 'error_handler' => (
 	is      => 'rw',
-	isa     => 'Web::WTK::RequestHandler::Handler',
+	does    => 'Web::WTK::RequestHandler::Handler',
 	builder => 'build_error_handler',
 	lazy    => 1,
 );
@@ -90,11 +90,11 @@ sub process {
 		# trigger the page handler
 		$self->page_construct_handler->handle($ctx);
 
-		# trigger the page and components render handler
-		$self->render_handler->handle($ctx);
-
 		# trigger the component handler
 		$self->event_handler->handle($ctx);
+
+		# trigger the page and components render handler
+		$self->render_handler->handle($ctx);
 	}
 	catch {
 		$ctx->error($_);
