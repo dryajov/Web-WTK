@@ -94,7 +94,7 @@ sub add {
 
 	# contruct the component
 	$component->construct
-	  if eval { $component->does('Web::WTK::Component::Construct') };
+	  if eval { $component->does('Web::WTK::Component::Constructable') };
 
 	return $component;
 }

@@ -1,4 +1,4 @@
-package Web::WTK::Component::Construct;
+package Web::WTK::Component::Constructable;
 
 use namespace::autoclean;
 
@@ -6,6 +6,6 @@ use Moose::Role;
 
 # called inside the BUILD method
 # used to contruct the component
-sub construct { }
+requires 'construct';
 
 1;

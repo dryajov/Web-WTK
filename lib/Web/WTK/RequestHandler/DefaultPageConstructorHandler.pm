@@ -20,7 +20,7 @@ sub _load_page {
 	  || $page_path;
 
 	my $session    = $ctx->session;
-	my $page       = $session->get_page($page_cache);
+	my $page       = $session->page_store->get_page($page_cache);
 	my $params     = $ctx->request->parameters;
 	my $page_class = Web::WTK->instance->get_mount($page_path);
 
@@ -55,7 +55,7 @@ sub _load_page {
 			throw Web::WTK::Exception::EndpointExeptions::InternalError->new;
 		};
 
-		$ctx->session->set_page( $page_path, $page );
+		$ctx->session->page_store->set_page( $page_path, $page );
 	}
 
 	return $page;

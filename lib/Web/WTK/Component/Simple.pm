@@ -8,7 +8,6 @@ use Carp;
 use Web::WTK::Markup::Element;
 
 extends 'Web::WTK::Component';
-with 'Web::WTK::Component::Construct';
 
 has 'page' => (
 	is      => 'rw',

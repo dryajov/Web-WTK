@@ -35,7 +35,7 @@ class_type 'Web::WTK::Exception::Base';
 
 has 'error' => (
 	is  => 'rw',
-	isa => 'Web::WTK::Exception::Base',
+	isa => 'Web::WTK::Exception::Base|Any',
 );
 
 has 'route_info' => (

@@ -5,6 +5,8 @@ use namespace::autoclean;
 use Moose;
 
 use Web::WTK::Context;
+use Web::WTK::Session::PageMap;
+use Web::WTK::GenericStorage::Stores::HashStore;
 
 has 'id' => (
 	is       => 'rw',
@@ -13,19 +15,16 @@ has 'id' => (
 );
 
 has 'page_store' => (
-	traits  => ['Hash'],
 	is      => 'rw',
-	isa     => 'HashRef[Web::WTK::Component::Container::Page]',
-	default => sub { {} },
-	handles => {
-		set_page    => 'set',
-		get_page    => 'get',
-		has_page    => 'is_empty',
-		num_page    => 'count',
-		delete_page => 'delete',
-		page_pairs  => 'kv',
-	}
+	isa     => 'Web::WTK::Session::PageMap',
+	builder => '_build_page_store',
 );
+
+sub _build_page_store {
+	return Web::WTK::Session::PageMap->new(
+		backend => Web::WTK::GenericStorage::Stores::HashStore->new
+	);
+}
 
 has 'data' => (
 	traits  => ['Hash'],

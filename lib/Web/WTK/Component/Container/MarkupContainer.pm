@@ -10,7 +10,6 @@ use Web::WTK::Markup::ElementStream;
 use Web::WTK::Resolver::ClassToMarkupResource;
 
 extends 'Web::WTK::Component::Container';
-with 'Web::WTK::Component::Construct';
 
 has 'markup' => (
 	is      => 'ro',

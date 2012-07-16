@@ -25,7 +25,7 @@ has 'context' => (
 	handles  => {
 		render_count    => sub { $_[0]->context->route_info->render_count },
 		component_route => sub { $_[0]->context->route_info->component_route },
-		page_route => sub { $_[0]->context->route_info->page_route },
+		page_route      => sub { $_[0]->context->route_info->page_route },
 	},
 );
 
@@ -38,6 +38,18 @@ has 'uri' => (
 		page_url           => 'as_string',
 		page_relative_path => 'path'
 	},
+);
+
+has 'render_count' => (
+	traits  => ['Counter'],
+	is      => 'ro',
+	isa     => 'Num',
+	default => 0,
+	handles => {
+		inc_render_count   => 'inc',
+		dec_render_count   => 'dec',
+		reset_render_count => 'reset',
+	}
 );
 
 sub _build_page_uri {
@@ -55,6 +67,7 @@ sub _build_page_uri {
 sub BUILDARGS {
 	my ($class) = shift;
 
+	# make page name the page id
 	my %params = @_ ? @_ : ();
 	my $name = $class;
 	$name =~ s/::/_/;

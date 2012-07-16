@@ -7,6 +7,7 @@ use Moose;
 use Web::WTK::Markup::Element;
 
 with 'Web::WTK::Roles::Renderable';
+with 'Web::WTK::Component::Constructable';
 
 has 'parent' => (
 	is       => 'rw',
@@ -37,6 +38,17 @@ has 'elm' => (
 	isa      => 'Web::WTK::Markup::Element',
 	weak_ref => 1,
 );
+
+# called during construction
+# all components *have* to
+# override this method in order
+# to be able to construct them self.
+# usually those components that are user
+# defined or extended, would put the
+# page/component logic here.
+sub construct {
+
+}
 
 sub get_root_component {
 	my $self   = shift;
