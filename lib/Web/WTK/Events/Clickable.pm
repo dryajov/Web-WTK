@@ -6,18 +6,15 @@ use Moose::Role;
 with 'Web::WTK::Events::Event';
 
 has 'on_click' => (
-	is  => 'rw',
+	is => 'rw',
 	isa => 'CodeRef',
+	trigger => \&_set_handler,
 );
 
-sub on_event {
-	my $self = shift;
+sub _set_handler {
+	my ( $self, $handler, $old_handler ) = @_;
 
-	my $res;
-	$res = $self->on_click->( $self, @_ )
-	  if $self->on_click;
-
-	return $res;
+	$self->_handler($handler);
 }
 
 1;

@@ -27,17 +27,15 @@ sub get_component_path {
 	return join '.', $self->get_component_parents;
 }
 
-sub generate_component_url {
+sub get_component_url {
 	my $self = shift;
 
-	my $component_url;
 	my $page_url = $self->page->page_url;
-
 	$page_url = "$page_url/"
 	  if $page_url !~ m|/$|;
 
 	my $render_count = $self->page->render_count;
-	$component_url =
+	my $component_url =
 	  $page_url . "$render_count/" . $self->get_component_path;
 	return $component_url;
 }

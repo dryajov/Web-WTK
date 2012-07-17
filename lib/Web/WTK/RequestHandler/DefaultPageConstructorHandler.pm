@@ -16,6 +16,7 @@ use Web::WTK::Exception::EndpointExceptions;
 sub _load_page {
 	my ( $self, $ctx, $page_path ) = @_;
 
+	# try to get the current requested page version
 	my $page_cache = $ctx->route_info->get_page_route_with_render_count
 	  || $page_path;
 
@@ -41,11 +42,24 @@ sub _load_page {
 		};
 
 		try {
+			if ( exists $session->render_count->{$page_path} ) {
+				$session->render_count->{$page_path}++;
+			}
+			else {
+				$session->render_count->{$page_path} = 0;
+			}
+
+			# instantiate page
 			$page = $page_class->new(
-				parameters => $params,
-				context    => $ctx
+				parameters   => $params,
+				context      => $ctx,
+				render_count => $session->render_count->{$page_path},
 			);
+			
+			# construct page
 			$page->construct;
+			$page_cache = "$page_path/" . $page->render_count;
+			$ctx->session->page_store->set_page( $page_cache, $page );
 		}
 		catch {
 
@@ -54,8 +68,6 @@ sub _load_page {
 			my $error = $_;
 			throw Web::WTK::Exception::EndpointExeptions::InternalError->new;
 		};
-
-		$ctx->session->page_store->set_page( $page_path, $page );
 	}
 
 	return $page;

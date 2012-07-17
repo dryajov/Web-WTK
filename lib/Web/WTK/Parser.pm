@@ -2,21 +2,15 @@ package Web::WTK::Parser;
 
 use namespace::autoclean;
 
-use Moose;
-use Carp;
+use Moose::Role;
 
 # the root of the parsed doc
 has 'document' => (
-    is      => 'rw',
-    isa     => 'Web::WTK::Markup::Element',
-    builder => 'parse',
-    lazy    => 1,
+	is      => 'rw',
+	isa     => 'Web::WTK::Markup::Element',
+	builder => 'parse',
+	lazy    => 1,
 );
 
-sub parse {
-    my ( $self, $content ) = @_;
-    croak "Method unimplemented!";
-}
-
-__PACKAGE__->meta->make_immutable;
+requires 'parse';
 1;

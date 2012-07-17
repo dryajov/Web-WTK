@@ -7,7 +7,7 @@ use Moose;
 use XML::SAX::ParserFactory;
 use Web::WTK::Parser::XML::SAX::ParserHandler;
 
-extends 'Web::WTK::Parser';
+with 'Web::WTK::Parser';
 
 has 'parser' => (
 	is      => 'rw',

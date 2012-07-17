@@ -20,10 +20,16 @@ has 'page_store' => (
 	builder => '_build_page_store',
 );
 
+has 'render_count' => (
+	is      => 'rw',
+	isa     => 'HashRef[Num]',
+	default => sub { {} },
+	lazy    => 1,
+);
+
 sub _build_page_store {
 	return Web::WTK::Session::PageMap->new(
-		backend => Web::WTK::GenericStorage::Stores::HashStore->new
-	);
+		backend => Web::WTK::GenericStorage::Stores::HashStore->new );
 }
 
 has 'data' => (

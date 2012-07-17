@@ -19,7 +19,7 @@ sub _href {
 
 	my $href = '#';
 	if ( $self->on_click ) {
-		$href = $self->generate_component_url;
+		$href = $self->get_component_url;
 	}
 
 	return $href;

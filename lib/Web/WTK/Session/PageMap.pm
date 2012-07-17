@@ -4,10 +4,11 @@ use namespace::autoclean;
 
 use Moose;
 
-has 'backend' => (
+has '_backend' => (
 	is       => 'rw',
 	does     => 'Web::WTK::GenericStorage::Storage',
 	required => 1,
+	init_arg => 'backend',
 	handles  => {
 		get_page       => 'get',
 		set_page       => 'set',

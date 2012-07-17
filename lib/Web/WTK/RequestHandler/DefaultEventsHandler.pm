@@ -21,7 +21,6 @@ sub handle {
 			# we want to rerender the page/componnent
 			if ( $component->on_event ) {
 				$component->rendered(0);
-				$ctx->route_info->inc_render_count;
 				my $route_info = $ctx->route_info;
 				my $page_cache = $route_info->get_page_route_with_render_count;
 				$ctx->session->page_store->set_page( $page_cache,

@@ -23,13 +23,12 @@ has 'context' => (
 	isa      => 'Web::WTK::Context',
 	required => 1,
 	handles  => {
-		render_count    => sub { $_[0]->context->route_info->render_count },
 		component_route => sub { $_[0]->context->route_info->component_route },
 		page_route      => sub { $_[0]->context->route_info->page_route },
 	},
 );
 
-has 'uri' => (
+has 'url' => (
 	is      => 'rw',
 	isa     => 'URI',
 	builder => '_build_page_uri',
@@ -38,18 +37,6 @@ has 'uri' => (
 		page_url           => 'as_string',
 		page_relative_path => 'path'
 	},
-);
-
-has 'render_count' => (
-	traits  => ['Counter'],
-	is      => 'ro',
-	isa     => 'Num',
-	default => 0,
-	handles => {
-		inc_render_count   => 'inc',
-		dec_render_count   => 'dec',
-		reset_render_count => 'reset',
-	}
 );
 
 sub _build_page_uri {
@@ -63,6 +50,12 @@ sub _build_page_uri {
 	my $url = $scheme . "://" . $host_port . $app_base . $page_route;
 	return URI->new($url)->canonical();
 }
+
+has 'render_count' => (
+	is       => 'rw',
+	isa      => 'Num',
+	required => 1,
+);
 
 sub BUILDARGS {
 	my ($class) = shift;
