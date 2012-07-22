@@ -6,7 +6,7 @@ use Moose;
 
 use Web::WTK::Context;
 use Web::WTK::Session::PageMap;
-use Web::WTK::GenericStorage::Stores::HashStore;
+use Web::WTK::GenericStorage::Stores::InMemoryStore;
 
 has 'id' => (
 	is       => 'rw',
@@ -20,17 +20,17 @@ has 'page_store' => (
 	builder => '_build_page_store',
 );
 
+sub _build_page_store {
+	return Web::WTK::Session::PageMap->new(
+		backend => Web::WTK::GenericStorage::Stores::InMemoryStore->new );
+}
+
 has 'render_count' => (
 	is      => 'rw',
 	isa     => 'HashRef[Num]',
 	default => sub { {} },
 	lazy    => 1,
 );
-
-sub _build_page_store {
-	return Web::WTK::Session::PageMap->new(
-		backend => Web::WTK::GenericStorage::Stores::HashStore->new );
-}
 
 has 'data' => (
 	traits  => ['Hash'],
@@ -45,6 +45,12 @@ has 'data' => (
 		delete_data => 'delete',
 		data_pairs  => 'kv',
 	}
+);
+
+has 'authenticated' => (
+	is      => 'rw',
+	isa     => 'Bool',
+	default => 0,
 );
 
 __PACKAGE__->meta->make_immutable;

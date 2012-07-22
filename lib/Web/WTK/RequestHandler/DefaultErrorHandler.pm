@@ -9,7 +9,12 @@ with 'Web::WTK::RequestHandler::Handler';
 sub handle {
 	my ( $self, $ctx ) = @_;
 
-	die $ctx->error->trace->as_string;
+	if ( eval {$ctx->error->can("trace")}) {
+		die $ctx->error->trace->as_string;	
+	} else {
+		die $ctx->error;
+	}
+	
 	return;
 }
 

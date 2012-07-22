@@ -48,22 +48,24 @@ sub _parse_location_info {
 		$path =~ s|^\Q$app_base\E||g
 		  if $app_base ne "/";
 
-		# get the page path from the request path
-		my ( $page_route, $reduced ) = ( "", "" );
-		while ( length $path ) {
+		{
+			# get the page path from the request path
+			my ( $page_route, $reduced ) = ( "", "" );
+			while ( length $path ) {
 
-			if ( Web::WTK->instance->exists_mount($path) ) {
-				$page_route = $path;
-				$path       = $reduced;
-				last;
+				if ( Web::WTK->instance->exists_mount($path) ) {
+					$page_route = $path;
+					$path       = $reduced;
+					last;
+				}
+
+				# reduce the path
+				($reduced) = $2 . $reduced
+				  if $path =~ s|^(.*)(/.*/?)$|$1|;
 			}
 
-			# reduce the path
-			($reduced) = $2 . $reduced
-			  if $path =~ s|^(.*)(/.*/?)$|$1|;
+			$ctx->route_info->page_route($page_route);
 		}
-
-		$ctx->route_info->page_route($page_route);
 
 		# get the current render count from the request path
 		my $render_count;

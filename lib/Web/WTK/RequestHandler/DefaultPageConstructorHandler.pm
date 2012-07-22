@@ -17,11 +17,11 @@ sub _load_page {
 	my ( $self, $ctx, $page_path ) = @_;
 
 	# try to get the current requested page version
-	my $page_cache = $ctx->route_info->get_page_route_with_render_count
+	my $page_cache_id = $ctx->route_info->get_page_route_with_render_count
 	  || $page_path;
 
 	my $session    = $ctx->session;
-	my $page       = $session->page_store->get_page($page_cache);
+	my $page       = $session->page_store->get_page($page_cache_id);
 	my $params     = $ctx->request->parameters;
 	my $page_class = Web::WTK->instance->get_mount($page_path);
 
@@ -58,8 +58,8 @@ sub _load_page {
 			
 			# construct page
 			$page->construct;
-			$page_cache = "$page_path/" . $page->render_count;
-			$ctx->session->page_store->set_page( $page_cache, $page );
+			$page_cache_id = "$page_path/" . $page->render_count;
+			$ctx->session->page_store->set_page( $page_cache_id, $page );
 		}
 		catch {
 

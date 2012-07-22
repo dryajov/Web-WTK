@@ -28,7 +28,7 @@ has 'render_count' => (
 sub get_page_route_with_render_count {
 	my $self = shift;
 
-	return $self->page_route . "/" . $self->render_count;
+	return $self->page_route . "/" . ($self->render_count // "");
 
 }
 

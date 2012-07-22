@@ -16,7 +16,7 @@ has 'is_root' => (
 	lazy    => 1,
 );
 
-has 'children' => (
+has 'components' => (
 	traits  => ['Hash'],
 	is      => 'ro',
 	isa     => 'HashRef[Web::WTK::Component]',
@@ -87,7 +87,7 @@ sub _find_component_by_route {
 sub add {
 	my ( $self, $component ) = @_;
 
-	$self->children->{ $component->id } = $component;
+	$self->components->{ $component->id } = $component;
 	$component->parent($self);
 
 	push @{ $self->_comp_order }, $component->id;

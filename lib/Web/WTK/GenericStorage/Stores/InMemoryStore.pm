@@ -1,10 +1,11 @@
-package Web::WTK::GenericStorage::Stores::HashStore;
+package Web::WTK::GenericStorage::Stores::InMemoryStore;
 
 use namespace::autoclean;
 
 use Moose;
 
-has '_hash_store' => (
+# just a hash that implements the store
+has '_store' => (
 	traits  => ['Hash'],
 	is      => 'ro',
 	isa     => 'HashRef[Any]',

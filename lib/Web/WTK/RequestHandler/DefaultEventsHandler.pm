@@ -17,7 +17,7 @@ sub handle {
 		my $does_event = eval { $component->does("Web::WTK::Events::Event") };
 		if ( $component && $does_event ) {
 
-			# if the event handled returns possitive,
+			# if the event handled returns true,
 			# we want to rerender the page/componnent
 			if ( $component->on_event ) {
 				$component->rendered(0);

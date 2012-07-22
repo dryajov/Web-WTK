@@ -5,10 +5,9 @@ package Web::WTK;
 use namespace::autoclean;
 
 use MooseX::Singleton;
-use Cwd 'abs_path';
-
 use Web::WTK::Printers::Roles::Printable;
 
+# the routes of the application
 has 'mounts' => (
 	traits  => ['Hash'],
 	is      => 'ro',
@@ -25,27 +24,25 @@ has 'mounts' => (
 	},
 );
 
+# resource such as xHTML and properties
+# are assumed to be in the same place that
+# the page/panel is, unless this is set to a
+# valid path, in which case they are going
+# to be lookued up there
 has 'resources_path' => (
-	is      => 'ro',
-	isa     => 'Str',
-	builder => 'build_resource_path',
+	is  => 'rw',
+	isa => 'Str',
 );
 
-sub build_resource_path {
-	abs_path($0);
-}
-
-has 'src_base' => (
-	is      => 'ro',
-	isa     => 'Str',
-	builder => 'build_src_base',
+# the base of the source -
+has 'app_src_base' => (
+	is       => 'ro',
+	isa      => 'Str',
+	required => 1,
 );
 
-sub build_src_base {
-	abs_path($0);
-}
-
-# the virtual url base of the application
+# the virtual url base
+# of the application
 has 'app_base' => (
 	is      => 'ro',
 	isa     => 'Str',

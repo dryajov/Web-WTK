@@ -34,6 +34,14 @@ has 'session_stash' => (
 	isa => 'Web::WTK::Session::SessionStash',
 );
 
+# NOTE: this is intended as a global shared state
+# so the storage *has* to be synchronized to avoid 
+# raise condition
+has 'resources_cache' => (
+	is   => 'rw',
+	does => 'Web::WTK::GenericStorage::Storage',
+);
+
 # expects a context object
 sub run {
 	my $self = shift;
