@@ -7,7 +7,7 @@ use Moose::Util::TypeConstraints;
 
 use Web::WTK::Response;
 use Web::WTK::Exception::Base;
-use Web::WTK::Request::RouteInfo;
+use Web::WTK::Router::RouteInfo;
 
 has 'request' => (
 	is  => 'rw',
@@ -26,6 +26,11 @@ has 'page' => (
 	isa => 'Web::WTK::Component::Container::Page',
 );
 
+has 'page_class' => (
+	is  => 'rw',
+	isa => 'Str',
+);
+
 has 'expire_session' => (
 	is  => 'rw',
 	isa => 'Bool',
@@ -40,8 +45,8 @@ has 'error' => (
 
 has 'route_info' => (
 	is      => 'rw',
-	isa     => 'Web::WTK::Request::RouteInfo',
-	default => sub { Web::WTK::Request::RouteInfo->new },
+	isa     => 'Web::WTK::Router::RouteInfo',
+	default => sub { Web::WTK::Router::RouteInfo->new },
 	lazy    => 1,
 );
 

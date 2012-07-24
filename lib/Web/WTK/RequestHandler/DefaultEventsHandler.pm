@@ -9,6 +9,8 @@ with 'Web::WTK::RequestHandler::Handler';
 sub handle {
 	my ( $self, $ctx ) = @_;
 
+	# if a component was requested then  
+	# try to invoke it's event handler if any
 	if ( $ctx->route_info->component_route ) {
 		my $page = $ctx->page;
 

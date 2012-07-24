@@ -31,7 +31,7 @@ has 'context' => (
 has 'url' => (
 	is      => 'rw',
 	isa     => 'URI',
-	builder => '_build_page_uri',
+	builder => '_build_page_url',
 	lazy    => 1,
 	handles => {
 		page_url           => 'as_string',
@@ -39,15 +39,22 @@ has 'url' => (
 	},
 );
 
-sub _build_page_uri {
+sub _build_page_url {
 	my $self = shift;
 
 	my $host_port  = $self->context->request->host_port;
 	my $scheme     = $self->context->request->scheme;
 	my $page_route = $self->context->route_info->page_route;
 	my $app_base   = Web::WTK->instance()->app_base;
+	my $url_params = join '/', $self->context->request->url_params->flatten;
 
-	my $url = $scheme . "://" . $host_port . $app_base . $page_route;
+	my $url =
+	    $scheme . "://"
+	  . $host_port
+	  . $app_base
+	  . $page_route
+	  . "/$url_params";
+	  
 	return URI->new($url)->canonical();
 }
 

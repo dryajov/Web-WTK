@@ -11,28 +11,19 @@ use Hash::MultiValue;
 use HTTP::Headers;
 use IO::Handle;
 
-my $count;
+my $id;
 
 has 'id' => (
 	is      => 'ro',
 	isa     => 'Int',
-	default => sub { $count++ },
+	default => sub { $id++ },
 );
 
 has 'method' => (
 	is  => 'rw',
 	isa => enum(
-		qw/
-		  OPTIONS
-		  GET
-		  HEAD
-		  POST
-		  PUT
-		  DELETE
-		  TRACE
-		  CONNECT
-		  PATCH
-		  /
+		qw/ OPTIONS GET HEAD POST PUT
+		  DELETE TRACE CONNECT PATCH/
 	),
 );
 
@@ -112,6 +103,20 @@ has 'parameters' => (
 	},
 	lazy => 1,
 );
+
+has 'url_params' => (
+	is      => 'rw',
+	isa     => 'Hash::MultiValue',
+	trigger => \&_set_url_params,
+);
+
+sub _set_url_params {
+	my ( $self, $new, $old ) = @_;
+
+	if ( $new && !$old) {
+		$new->each( sub { $self->parameters->add( $_[0], $_[1] ) } );
+	}
+}
 
 has 'path_info' => (
 	is  => 'rw',

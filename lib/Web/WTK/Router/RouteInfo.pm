@@ -1,4 +1,4 @@
-package Web::WTK::Request::RouteInfo;
+package Web::WTK::Router::RouteInfo;
 
 use namespace::autoclean;
 
@@ -22,7 +22,7 @@ has 'route_parameters' => (
 # the currently requested render count
 has 'render_count' => (
 	is      => 'rw',
-	isa     => 'Num',
+	isa     => 'Num|Undef',
 );
 
 sub get_page_route_with_render_count {

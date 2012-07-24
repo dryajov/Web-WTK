@@ -5,24 +5,21 @@ package Web::WTK;
 use namespace::autoclean;
 
 use MooseX::Singleton;
+
+use Web::WTK::Router;
 use Web::WTK::Printers::Roles::Printable;
 
-# the routes of the application
-has 'mounts' => (
-	traits  => ['Hash'],
+# the router of the application
+has 'router' => (
 	is      => 'ro',
-	isa     => 'HashRef[Str]',
-	default => sub { {} },
+	does    => 'Web::WTK::Router::Router',
+	builder => 'build_router',
 	lazy    => 1,
-	handles => {
-		get_mount           => 'get',
-		has_mounts          => 'is_empty',
-		num_mounts          => 'count',
-		mount_pairs         => 'kv',
-		get_all_mount_paths => 'keys',
-		exists_mount        => 'defined',
-	},
 );
+
+sub build_router {
+	return Web::WTK::Router->new;
+}
 
 # resource such as xHTML and properties
 # are assumed to be in the same place that
@@ -34,19 +31,20 @@ has 'resources_path' => (
 	isa => 'Str',
 );
 
-# the base of the source -
+# the base of the source
 has 'app_src_base' => (
-	is       => 'ro',
-	isa      => 'Str',
-	required => 1,
+	is  => 'rw',
+	isa => 'Str',
 );
 
 # the virtual url base
 # of the application
 has 'app_base' => (
-	is      => 'ro',
+	is      => 'rw',
 	isa     => 'Str',
 	builder => 'build_app_base',
+	lazy    => 1,
+	writer	=> '_set_app_base'
 );
 
 sub build_app_base {
@@ -65,25 +63,20 @@ has 'printer' => (
 	default => sub { Web::WTK::Printers::Html->new },
 );
 
-sub BUILDARGS {
-	my ( $self, %args ) = @_;
+sub BUILD {
+	my ( $self, $args ) = @_;
 
-	my $mounts = $args{mounts};
-	my %fixed_mounts;
-
-	# remove trailing /
-	while ( my ( $path, $page ) = each %$mounts ) {
-		$path =~ s|\z/||x;
-		$fixed_mounts{ lc $path } = $page;
+	# add routes
+	my $routes = $args->{routes};
+	for my $route (@$routes) {
+		$self->router->add_route($route);
 	}
 
-	$args{app_base} = "/$args{app_base}"
-	  if $args{app_base} !~ m|^/|;
-
-	$args{mounts} = \%fixed_mounts;
-
-	return \%args;
+	# fix app_base to have a leading slash
+	my $app_base = $args->{app_base};
+	if ( $app_base !~ m|^/| ) {
+		$self->_set_app_base("/$app_base");
+	}
 }
 
-__PACKAGE__->meta->make_immutable;
 1;

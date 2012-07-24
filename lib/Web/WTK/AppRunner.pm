@@ -55,6 +55,7 @@ sub run {
 	$self->session_stash->get($ctx);
 	$ctx->request($req);
 
+	# process the request
 	$self->request_processor->process($ctx);
 
 	# detach any transient data

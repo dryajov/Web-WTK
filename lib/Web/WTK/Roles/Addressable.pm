@@ -31,12 +31,11 @@ sub get_component_url {
 	my $self = shift;
 
 	my $page_url = $self->page->page_url;
-	$page_url = "$page_url/"
-	  if $page_url !~ m|/$|;
+	$page_url =~ s|/$||;
 
 	my $render_count = $self->page->render_count;
 	my $component_url =
-	  $page_url . "$render_count/" . $self->get_component_path;
+	  $page_url . "?rc=$render_count&route=" . $self->get_component_path;
 	return $component_url;
 }
 

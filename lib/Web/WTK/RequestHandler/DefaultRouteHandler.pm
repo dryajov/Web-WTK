@@ -8,6 +8,7 @@ with 'Web::WTK::RequestHandler::Handler';
 
 use Try::Tiny;
 use Module::Load;
+use Hash::MultiValue;
 
 use Web::WTK;
 use Web::WTK::Printers::Html;
@@ -48,42 +49,24 @@ sub _parse_location_info {
 		$path =~ s|^\Q$app_base\E||g
 		  if $app_base ne "/";
 
-		{
-			# get the page path from the request path
-			my ( $page_route, $reduced ) = ( "", "" );
-			while ( length $path ) {
+		my $router = Web::WTK->instance->router;
+		my $route  = $router->match($path);
 
-				if ( Web::WTK->instance->exists_mount($path) ) {
-					$page_route = $path;
-					$path       = $reduced;
-					last;
-				}
+		if ($route) {
+			$ctx->route_info->page_route( $route->[0] );
+			$ctx->page_class( $route->[1] );
+			$ctx->request->url_params(
+				Hash::MultiValue->new( @{ $route->[2] } )
+			);
 
-				# reduce the path
-				($reduced) = $2 . $reduced
-				  if $path =~ s|^(.*)(/.*/?)$|$1|;
-			}
+			# get the current render count from the url params
+			$ctx->route_info->render_count(
+				$ctx->request->parameters->get("rc") );
 
-			$ctx->route_info->page_route($page_route);
+			# get the component route from the url params
+			$ctx->route_info->component_route(
+				$ctx->request->parameters->get("route") );
 		}
-
-		# get the current render count from the request path
-		my $render_count;
-		if ( length $path ) {
-
-			# reduce the path
-			$ctx->route_info->render_count( $1 || 0 )
-			  if $path =~ s|^/(\d+)||;
-		}
-
-		# get the component path and the event to be triggered
-		if ( length $path ) {
-
-			if ( $path =~ s|^/?([\w.]+)/?||g ) {
-				$ctx->route_info->component_route($1);
-			}
-		}
-
 	}
 }
 

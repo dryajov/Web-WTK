@@ -22,8 +22,8 @@ sub _load_page {
 
 	my $session    = $ctx->session;
 	my $page       = $session->page_store->get_page($page_cache_id);
+	my $page_class = $ctx->page_class;
 	my $params     = $ctx->request->parameters;
-	my $page_class = Web::WTK->instance->get_mount($page_path);
 
 	if ($page) {
 		$page->parameters($params);
