@@ -84,7 +84,7 @@ sub child {
 
 sub replace_body {
 	my $self = shift;
-	$self->body( [shift] );
+	$self->body( [@_] );
 }
 
 sub attr {

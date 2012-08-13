@@ -22,6 +22,8 @@ sub on_after_render { }
 # implemented by components
 requires 'render';
 
+requires 'elm';
+
 # just set the rendered flag
 around 'render' => sub {
 	my $orig = shift;

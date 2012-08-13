@@ -10,9 +10,15 @@ with 'Web::WTK::Roles::Addressable';
 with 'Web::WTK::Events::Clickable';
 
 has 'text' => (
-	is  => 'rw',
-	isa => 'Str',
+	is      => 'rw',
+	isa     => 'Str',
+	trigger => \&_trigger_model,
 );
+
+sub _trigger_model {
+	my ( $self, $new, $old ) = @_;
+	$self->set_model_from($new);
+}
 
 sub _href {
 	my $self = shift;
@@ -28,7 +34,7 @@ sub _href {
 sub render {
 	my ( $self, $elm ) = @_;
 
-	$elm->replace_body( $self->text );
+	$elm->replace_body( $self->model->value );
 	$elm->attr( "href", $self->_href );
 	$elm->name("a");
 	return $self->SUPER::render($elm);

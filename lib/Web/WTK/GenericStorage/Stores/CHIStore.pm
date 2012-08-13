@@ -14,7 +14,7 @@ has 'store' => (
 );
 
 sub _build_store {
-	return CHI->new( driver => 'Memory', global => 1 );
+	return CHI->new( driver => 'RawMemory', global => 1 );
 }
 
 sub get {

@@ -4,7 +4,6 @@ use namespace::autoclean;
 
 use Moose;
 
-use Web::WTK::Parser::XML::SAX::Parser;
 use Web::WTK::Markup::Stream;
 use Web::WTK::Markup::ElementStream;
 use Web::WTK::ResourceLoader::ResourceFactory;

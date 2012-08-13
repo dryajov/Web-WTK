@@ -12,7 +12,7 @@ use Try::Tiny;
 has 'is_root' => (
 	is      => 'rw',
 	isa     => 'Bool',
-	default => sub { shift->parent },
+	default => sub { defined shift->parent ? 1 : 0; },
 	lazy    => 1,
 );
 

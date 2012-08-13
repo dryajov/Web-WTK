@@ -42,10 +42,10 @@ sub _load_page {
 		};
 
 		try {
-			if ( exists $session->render_count->{$page_path} ) {
+			if ( $page_path && exists $session->render_count->{$page_path} ) {
 				$session->render_count->{$page_path}++;
 			}
-			else {
+			elsif ($page_path) {
 				$session->render_count->{$page_path} = 0;
 			}
 
@@ -55,7 +55,7 @@ sub _load_page {
 				context      => $ctx,
 				render_count => $session->render_count->{$page_path},
 			);
-			
+
 			# construct page
 			$page->construct;
 			$page_cache_id = "$page_path/" . $page->render_count;

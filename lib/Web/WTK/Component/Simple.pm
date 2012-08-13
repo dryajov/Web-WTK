@@ -3,7 +3,6 @@ package Web::WTK::Component::Simple;
 use namespace::autoclean;
 
 use Moose;
-use Carp;
 
 use Web::WTK::Markup::Element;
 

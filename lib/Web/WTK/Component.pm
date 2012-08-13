@@ -6,9 +6,6 @@ use Moose;
 
 use Web::WTK::Markup::Element;
 
-with 'Web::WTK::Roles::Renderable';
-with 'Web::WTK::Component::Constructable';
-
 has 'parent' => (
 	is       => 'rw',
 	isa      => 'Web::WTK::Component',
@@ -39,6 +36,17 @@ has 'elm' => (
 	weak_ref => 1,
 );
 
+has 'model' => (
+	is   => 'rw',
+	does => 'Web::WTK::Models::Model',
+);
+ 
+sub set_model_from {
+	my ( $self, $val ) = @_;
+
+	$self->model( Web::WTK::Models::Factory->get_model_from($val) );
+}
+
 # called during construction
 # all components *have* to
 # override this method in order
@@ -64,14 +72,14 @@ sub get_root_component {
 
 sub render {
 	my ( $self, $markup ) = @_;
-	if ( !$self->rendered ) {
-		if ( !$self->visible ) {
-			$markup->render_flag($Web::WTK::Markup::Element::RENDER_NONE);
-		}
-	}
-
+#	if ( !$self->visible ) {
+#		$markup->render_flag($Web::WTK::Markup::Element::RENDER_NONE);
+#	}
 	return $markup;
 }
+
+with 'Web::WTK::Roles::Renderable';
+with 'Web::WTK::Component::Constructable';
 
 __PACKAGE__->meta->make_immutable;
 1;
